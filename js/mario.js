@@ -130,12 +130,12 @@ function handlePlayerInput() {
 
     if (leftPressed && player.canMoveInDirection(Direction.LEFT)) {
         //player.setX(player.getX() - 1);
-        player.addVelocity(-player.getAccelerationSpeed());
+        player.addVelocity({x: -player.getAccelerationSpeed(), y: player.getVelocity().y});
         player.setHorizontalLookingDirection(Direction.LEFT);
     }
     if (rightPressed && player.canMoveInDirection(Direction.RIGHT)) {
         //player.setX(player.getX() + 1);
-        player.addVelocity(player.getAccelerationSpeed());
+        player.addVelocity({x: player.getAccelerationSpeed(), y: player.getVelocity().y});
         player.setHorizontalLookingDirection(Direction.RIGHT);
     }
     if (upPressed && !player.isFlying() && player.isOnGround() && !player.isJumping() && player.canMoveInDirection(Direction.UP)) {

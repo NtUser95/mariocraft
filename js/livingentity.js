@@ -21,7 +21,7 @@ export class LivingEntity extends Entity {
         super.update();
 
         if (this.isOnGround() && this.isFalling() && !this.isFlying()) {
-            const currentVelocity = this.getVelocity();
+            const currentVelocity = this.getVelocity();console.log(currentVelocity);
             if (currentVelocity.y > 0.5) {
                 const bounceCoefficient = -((100 - this.getHardness()) / 100);
                 currentVelocity.y = currentVelocity.y * bounceCoefficient;
