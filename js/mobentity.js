@@ -3,6 +3,8 @@ import {Direction, getOppositeDirection} from "./direction.js";
 
 export class MobEntity extends LivingEntity {
 
+    #maxSpeed = 2.5;
+
     constructor(world, x, y) {
         super(world, x, y);
     }
@@ -15,10 +17,16 @@ export class MobEntity extends LivingEntity {
         }
 
         const lookingDirection = this.getHorizontalLookingDirection();
-        if (this.canMoveInDirection(lookingDirection)) {
-            const movX = lookingDirection === Direction.RIGHT ? 2 : -2;
-            this.setX(this.getX() + movX);
+        const movX = lookingDirection === Direction.RIGHT ? this.getAccelerationSpeed() : -(this.getAccelerationSpeed());
+        const calcMovX = this.getVelocity().x + movX;
+        if (this.canMoveInDirection({x: calcMovX, y: this.getVelocity().y})) {
+            if (calcMovX >= 0 && calcMovX <= this.getMaxSpeed()) {
+                this.addVelocity({x: movX, y: 0});
+            } else if (calcMovX < 0 && calcMovX >= -this.getMaxSpeed()) {
+                this.addVelocity({x: movX, y: 0});
+            }
         } else {console.log('switch move direction' + getOppositeDirection(lookingDirection));
+            this.setVelocity({x: 0, y: this.getVelocity().y});
             this.setHorizontalLookingDirection(getOppositeDirection(lookingDirection))
         }
     }

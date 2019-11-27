@@ -218,8 +218,9 @@ export class Entity {
      *
      * @return {boolean}
      */
-    canMoveInDirection(direction) {
-        return !this.getCollisionWithEntityInDirection(direction).length && this.getCollisionWithTileInDirection(direction).getType() !== TileType.TEXTURE;
+    canMoveInDirection(velocity) {console.log(velocity);
+    const direction = velocity.x >= 0 ? Direction.RIGHT : Direction.LEFT;
+        return !this.getCollisionWithEntities(velocity).length && this.getCollisionWithTileInDirection(direction).getType() !== TileType.TEXTURE;
     }
 
     getCollisionWithTileInDirection(direction) {
@@ -239,29 +240,26 @@ export class Entity {
         }
     }
 
-    getCollisionWithEntityInDirection(direction) {
+    /**
+     *
+     * @param {Object} velocity
+     * @return Entity[]
+     */
+    getCollisionWithEntities(velocity) {
         const entities = [];
-
-        for(const entity of this.getWorld().getNearbyEntities(this.getX(), this.getY(), (this.getHeight() / 2) + 1)) {
+        const bodyRadius = (this.getHeight() / 2) + 1;
+        for(const entity of this.getWorld().getNearbyEntities(this.getX(), this.getY(), bodyRadius)) {
             if (entity === this) {
                 continue;
             }
 
-            //const diffX = Math.abs((this.getX() + (this.getWidth() / 2)) - (entity.getX() - (entity.getWidth()  / 2)));
-            //const diffY = Math.abs((this.getY() + (this.getHeight() / 2)) - (entity.getY() - (entity.getHeight()  / 2)));
-            const cV = this.getVelocity();
-            const dX = direction === Direction.LEFT ? -5 : 5;
-            const diff = Math.abs(Math.abs((this.getX() + dX) - entity.getX()) - Math.abs((this.getY()) - entity.getY()));console.log(dX);
-            if (diff <= ((this.getHeight() + entity.getHeight()) / 2)) {
+            const diffCentersX = Math.abs((this.getX() + velocity.x) - entity.getX());console.log(`(${this.getX()} + ${velocity.x}) - ${entity.getX()}`);
+            const diffCentersY = Math.abs((this.getY() + velocity.y) - entity.getY());
+            const bodiesHeightTotal = Math.abs((this.getHeight() / 2) + (entity.getHeight() / 2));
+            const bodiesWidthTotal = Math.abs((this.getWidth() / 2) + (entity.getWidth() / 2));
+            if (diffCentersY <= (bodiesHeightTotal / 2) && diffCentersX <= (bodiesWidthTotal / 2)) {
                 entities.push(entity);
-            }a
-            /*const diffY = entity.getY() - this.getY();
-            const diffX = entity.getX() - this.getX();
-            if ((direction === Direction.LEFT && diffX <= 0) || (direction === Direction.RIGHT && diffX >= 0)) {
-                entities.push(entity);
-            } else if((direction === Direction.UP && diffY <= 0) || (direction === Direction.DOWN && diffY >= 0)) {
-                entities.push(entity);
-            }*/
+            }
         }
 
         return entities;

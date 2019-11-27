@@ -8,6 +8,10 @@ export class LivingEntity extends Entity {
     #health = 20.0;
     /** @type {number} */
     #horizontalLookingDirection = Direction.RIGHT;
+    /** @type {number} */
+    #maxSpeed = 3;
+    /** @type {number} */
+    #accelerationSpeed = 1.1;
 
     constructor(world, x, y) {
         super(world, x, y);
@@ -118,5 +122,13 @@ export class LivingEntity extends Entity {
 
     onDeath() {
         console.log('death entity');
+    }
+
+    getMaxSpeed() {
+        return this.#maxSpeed;
+    }
+
+    getAccelerationSpeed() {
+        return this.#accelerationSpeed;
     }
 }

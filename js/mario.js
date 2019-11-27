@@ -3,6 +3,7 @@ import {Player} from "./player.js";
 import {Direction} from "./direction.js";
 import {MobEntity} from "./mobentity.js";
 import {Projectile} from "./projectile.js";
+import {LivingEntity} from "./livingentity.js";
 
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
@@ -58,12 +59,12 @@ let player;
 
 WorldBuilder.createFromFile('testlevel').then((w) => {
     world = w;console.log('load level');
-    player = new Player(world, 150, 300);
+    player = new Player(world, 150, 400);
     player.setHeight(30);
     player.setWidth(30);
     world.addEntity(player);
 
-    const mob = new MobEntity(world, 850, 300);
+    const mob = new MobEntity(world, 200, 400);
     mob.setHeight(30);
     mob.setWidth(30);
     world.addEntity(mob);
@@ -73,10 +74,10 @@ WorldBuilder.createFromFile('testlevel').then((w) => {
     mob2.setWidth(30);
     world.addEntity(mob2);*/
 
-    const mob4 = new MobEntity(world, 440, 300);
+    /*const mob4 = new MobEntity(world, 440, 300);
     mob4.setHeight(30);
     mob4.setWidth(30);
-    world.addEntity(mob4);
+    world.addEntity(mob4);*/
 });
 
 function drawGraphics() {
@@ -106,6 +107,11 @@ function drawGraphics() {
             ctx.fillStyle = "#dd0019";
         }
         ctx.fill();
+        if (entity instanceof LivingEntity) {
+            let message = `X:${entity.getX()}|Y:${entity.getY()}|v:${entity.getVelocity().x}/${entity.getVelocity().y}`;
+            ctx.fillText(message, entity.getX() - entity.getWidth(), entity.getY() - entity.getHeight());
+        }
+
         ctx.closePath();
     }
 
@@ -123,11 +129,13 @@ function handlePlayerInput() {
     }
 
     if (leftPressed && player.canMoveInDirection(Direction.LEFT)) {
-        player.setX(player.getX() - 1);
+        //player.setX(player.getX() - 1);
+        player.addVelocity(-player.getAccelerationSpeed());
         player.setHorizontalLookingDirection(Direction.LEFT);
     }
     if (rightPressed && player.canMoveInDirection(Direction.RIGHT)) {
-        player.setX(player.getX() + 1);
+        //player.setX(player.getX() + 1);
+        player.addVelocity(player.getAccelerationSpeed());
         player.setHorizontalLookingDirection(Direction.RIGHT);
     }
     if (upPressed && !player.isFlying() && player.isOnGround() && !player.isJumping() && player.canMoveInDirection(Direction.UP)) {
